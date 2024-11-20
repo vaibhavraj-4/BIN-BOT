@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Waste Segregation System</title>
+    <link rel="stylesheet" href="static/styles.css" />
+    <!-- Include Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div class="hero">
+      <div class="nav__bar">
+        <h1>BIN BOT</h1>
+      </div>
+      <video autoplay muted loop>
+        <source src="./../static/bgvideo.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+    <div class="content">
+      <!-- Upload Image Form -->
+      <form id="uploadForm" style="margin-top : 20px">
+        <label for="fileInput">Upload Image:</label>
+        <input type="file" id="fileInput" name="file" accept="image/*" />
+        <button type="submit">Classify Uploaded Image</button>
+      </form>
+    
+      <h2 style="margin-bottom : 10px; color : #333">Or use the Webcam:</h2>
+    
+      <!-- Start Webcam Button -->
+      <button id="startWebcamButton">Start Webcam</button>
+    
+      <!-- Stop Webcam Button -->
+      <button id="stopWebcamButton" style="display: none">Stop Webcam</button>
+    
+      <!-- Webcam Display Area -->
+      <div id="webcamContainer" style="margin-top : 10px; display: none; align-items:center; flex-direction:column">
+        <video id="webcam" autoplay playsinline width="400"></video>
+        <button id="captureButton">Capture and Classify</button>
+      </div>
+    
+      <!-- Results Section -->
+      <div id="results">
+        <h2>Results</h2>
+        <p id="label"></p>
+        <p id="confidence"></p>
+        <img id="previewImage" alt="Preview Image" style="max-width: 300px; display: none" />
+        <img id="binImage" alt="Bin Image" style="max-width: 300px; display: none" />
+      </div>
+    
+      <!-- Waste Counters -->
+      <div id="counters">
+        <p>Organic Waste Count: <span id="organicCount">0</span></p>
+        <p>Recyclable Waste Count: <span id="recyclableCount">0</span></p>
+      </div>
+    
+      <!-- Waste Count Graph -->
+      <h3>Waste Classification Graph</h3>
+      <div class="chart-container">
+        <h2>Waste Classification Chart</h2>
+        <canvas id="wasteChart" width="400" height="200"></canvas>
+      </div>
+    
+      <canvas id="canvas" style="display: none"></canvas>
+    </div>
+    
+    <script>
+      const uploadForm = document.getElementById("uploadForm");
+      const fileInput = document.getElementById("fileInput");
+      const captureButton = document.getElementById("captureButton");
+      const webcam = document.getElementById("webcam");
+      const webcamContainer = document.getElementById("webcamContainer");
+      const startWebcamButton = document.getElementById("startWebcamButton");
+      const stopWebcamButton = document.getElementById("stopWebcamButton");
+      const canvas = document.getElementById("canvas");
+      const labelElement = document.getElementById("label");
+      const confidenceElement = document.getElementById("confidence");
+      const previewImage = document.getElementById("previewImage");
+      const binImage = document.getElementById("binImage");
+
+      const organicCountElement = document.getElementById("organicCount");
+      const recyclableCountElement = document.getElementById("recyclableCount");
+
+      let organicCount = 0;
+      let recyclableCount = 0;
+
+      // Create the Chart.js chart for waste classification as a bar chart
+      const ctx = document.getElementById("wasteChart").getContext("2d");
+      const wasteChart = new Chart(ctx, {
+        type: "bar", // Changed to bar chart for better representation of data
+        data: {
+          labels: ["Organic Waste", "Recyclable Waste"], // Labels for the bars
+          datasets: [
+            {
+              label: "Waste Count", // Label for the dataset
+              data: [organicCount, recyclableCount], // The data for the bars
+              backgroundColor: ["#4CAF50", "#2196F3"], // Colors for the bars
+              borderColor: "#fff", // Border color of the bars
+              borderWidth: 2, // Border width of the bars
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: "top", // Position of the legend
+              labels: {
+                usePointStyle: true, // Use points for legend items
+                pointStyle: "circle",
+              },
+            },
+            tooltip: {
+              callbacks: {
+                label: function (tooltipItem) {
+                  return `${tooltipItem.label}: ${tooltipItem.raw}`; // Customizing tooltip label
+                },
+              },
+            },
+          },
+          scales: {
+            y: {
+              beginAtZero: true, // Ensure the y-axis starts at 0
+              ticks: {
+                stepSize: 1, // Define step size for y-axis ticks
+              },
+            },
+          },
+        },
+      });
+
+      // Function to increase the count based on classification
+      function countWaste(label) {
+        if (label === "Organic Waste") {
+          organicCount += 1;
+          organicCountElement.textContent = organicCount;
+        } else if (label === "Recyclable Waste") {
+          recyclableCount += 1;
+          recyclableCountElement.textContent = recyclableCount;
+        }
+
+        // Update the chart with the new data
+        wasteChart.data.datasets[0].data = [organicCount, recyclableCount];
+        wasteChart.update();
+      }
+
+      // Handle file upload
+      uploadForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const file = fileInput.files[0];
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await fetch("/classify", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          displayResults(data);
+        } else {
+          alert("Error in classification.");
+        }
+      });
+
+      // Handle webcam capture
+      captureButton.addEventListener("click", async () => {
+        const context = canvas.getContext("2d");
+        canvas.width = webcam.videoWidth;
+        canvas.height = webcam.videoHeight;
+        context.drawImage(webcam, 0, 0, canvas.width, canvas.height);
+
+        const imageBase64 = canvas.toDataURL("image/png").split(",")[1];
+
+        const response = await fetch("/classify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image_base64: imageBase64 }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          displayResults(data);
+        } else {
+          alert("Error in classification.");
+        }
+      });
+
+      // Display results
+      function displayResults(data) {
+        labelElement.textContent = `Label: ${data.label}`;
+        confidenceElement.textContent = `Confidence: ${(
+          data.confidence * 100
+        ).toFixed(2)}%`;
+        previewImage.src = data.preview_image_base64;
+        previewImage.style.display = "block";
+        binImage.src = data.bin_image_url;
+        binImage.style.display = "block";
+
+        // Update waste count based on classification
+        countWaste(data.label);
+      }
+
+      // Access webcam when Start Webcam button is clicked
+      startWebcamButton.addEventListener("click", () => {
+        navigator.mediaDevices
+          .getUserMedia({ video: true })
+          .then((stream) => {
+            webcam.srcObject = stream;
+            webcamContainer.style.display = "flex"; // Show webcam
+            startWebcamButton.style.display = "none"; // Hide start button
+            stopWebcamButton.style.display = "inline-block"; // Show stop button
+          })
+          .catch((error) => {
+            console.error("Error accessing webcam:", error);
+          });
+      });
+
+      // Stop webcam when Stop Webcam button is clicked
+      stopWebcamButton.addEventListener("click", () => {
+        const stream = webcam.srcObject;
+        const tracks = stream.getTracks();
+        tracks.forEach((track) => track.stop()); // Stop each track
+        webcam.srcObject = null;
+        webcamContainer.style.display = "none"; // Hide webcam
+        startWebcamButton.style.display = "inline-block"; // Show start button
+        stopWebcamButton.style.display = "none"; // Hide stop button
+      });
+
+      // Get references to elements
+// Get references to elements
+const hero = document.querySelector(".hero");
+const content = document.querySelector(".content");
+const video = document.querySelector("video");
+
+// Scroll event listener
+window.addEventListener("scroll", () => {
+  const scrollPosition = window.scrollY;
+
+  // Apply a blur effect on the video (based on scroll position)
+  const blurAmount = Math.min(scrollPosition / 20, 5); // Blur becomes stronger as you scroll
+  video.style.filter = `blur(${blurAmount}px)`;
+
+  // Apply transform to content (making it appear as if it's scrolling slowly)
+  const translateAmount = Math.min(scrollPosition, 400); // Larger amount of scrolling effect
+  content.style.transform = `translateY(-${translateAmount}px)`; // Move content up more when scrolling
+
+  // Apply a class to the hero section for blur effect
+  if (scrollPosition > 50) {
+    hero.classList.add("blurred");
+  } else {
+    hero.classList.remove("blurred");
+  }
+});
+
+      
+      
+    </script>
+  </body>
+</html>

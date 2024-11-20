@@ -1,0 +1,305 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+body{
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  gap: 20px;
+}
+
+/* Hero Section */
+.hero {
+  height: 100vh;
+  width: 100vw;
+  position: relative; /* Allow content to overlay on top of video */
+  transition: filter 0.3s ease-in-out, transform 0.3s ease;
+}
+
+/* Video Styling */
+.hero video {
+  position: sticky; /* Make video sticky */
+  top: 0; /* Keep it at the top of the viewport */
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1; /* Keep the video behind the content */
+  transition: filter 0.3s ease-in-out;
+}
+
+/* Content Styling */
+.content {
+  display: flex;
+  background-color: #f0f4f8;
+  width: 100%;
+  /* background: url("./bgimage.png") cover no-repeat; */
+  flex-direction: column;
+  align-items: center;
+  position: relative; /* Ensure content stays on top of video */
+  z-index: 2; /* Ensure content is above video */
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Apply a transform to move content upwards as you scroll */
+.content.scrolled {
+  transform: translateY(-500px); 
+}
+
+/* Header Styling */
+h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #FFF;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Adjust video blur effect when scrolling */
+.hero video {
+  transition: filter 0.3s ease-in-out;
+}
+
+/* Apply larger blur as you scroll */
+.hero.blurred video {
+  filter: blur(5px); /* Apply maximum blur */
+}
+
+
+
+
+.nav__bar {
+  height: 70px;
+  background-color: #333;
+  position: fixed; /* Keep the navbar at the top as you scroll */
+  top: 0px; /* Slightly offset from the top */
+  left: 0px; /* Offset from the left */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Align items to the left */
+  color: white;
+  font-size: 24px;
+  z-index: 10; /* Ensure the navbar is above other content */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 18px 0px 0px 15px;
+}
+/* Form Styling */
+form {
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+  color: #555;
+}
+
+input[type="file"] {
+  padding: 15px;
+  margin-bottom: 20px;
+  font-size: 1em;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease;
+}
+
+input[type="file"]:focus {
+  border-color: #0084f8;
+}
+
+button {
+  background-color: #0084f8;
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  font-size: 1.1em;
+  cursor: pointer;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, transform 0.2s ease;
+}
+
+button:hover {
+  background-color: #0084f8;
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+/* Webcam Section Styling */
+h2 {
+  margin-top: 40px;
+  color: #333;
+  font-size: 1.8em;
+}
+
+video {
+  border: 3px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#captureButton,
+#startWebcamButton,
+#stopWebcamButton {
+  padding: 12px 25px;
+  font-size: 1.1em;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s, transform 0.2s ease;
+}
+
+#captureButton {
+  background-color: #2196f3; /* Blue */
+}
+
+#startWebcamButton {
+  background-color: #0084f8; /* Green */
+  color: white;
+}
+
+#stopWebcamButton {
+  background-color: #f44336; /* Red */
+  color: white;
+}
+
+#captureButton:hover,
+#startWebcamButton:hover,
+#stopWebcamButton:hover {
+  transform: translateY(-2px);
+}
+
+#captureButton:active,
+#startWebcamButton:active,
+#stopWebcamButton:active {
+  transform: translateY(1px);
+}
+
+/* Results Styling */
+#results {
+  margin-top: 30px;
+  text-align: center;
+}
+
+#label,
+#confidence {
+  font-size: 1.3em;
+  margin: 10px 0;
+  color: #555;
+}
+
+#previewImage,
+#binImage {
+  max-width: 90%;
+  margin-top: 20px;
+  display: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Media Query for Responsiveness */
+@media (max-width: 600px) {
+  body {
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 2em;
+  }
+
+  form {
+    width: 100%;
+    padding: 15px;
+  }
+
+  label {
+    font-size: 1.1em;
+  }
+
+  input[type="file"],
+  button,
+  #captureButton,
+  #startWebcamButton,
+  #stopWebcamButton {
+    width: 100%;
+    font-size: 1em;
+  }
+
+  h2 {
+    font-size: 1.6em;
+  }
+
+  #results {
+    margin-top: 20px;
+  }
+
+  #myChart {
+    height: 300px; /* Reduce chart size for small screens */
+  }
+}
+
+/* Chart Styling */
+.chart-container {
+  width: 80%;
+  max-width: 600px;
+  margin: 20px auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.chart-container h2 {
+  text-align: center;
+  font-size: 1.8em;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+#myChart {
+  width: 100%;
+  height: 350px;
+  background-color: #fafafa;
+  border-radius: 8px;
+}
+
+.chart-legend {
+  margin-top: 20px;
+  font-size: 1.1em;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.chart-legend span {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.chart-tooltip {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 1em;
+  position: absolute;
+  display: none;
+  z-index: 9999;
+}
