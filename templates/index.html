@@ -18,53 +18,73 @@
         Your browser does not support the video tag.
       </video>
     </div>
+
     <div class="content">
       <!-- Upload Image Form -->
-      <form id="uploadForm" style="margin-top : 20px">
+      <div class="waste-segregation-header">
+        <p>Automated Waste Segregation System</p>
+      </div>
+      <form id="uploadForm" style="margin-top: 20px">
         <label for="fileInput">Upload Image:</label>
         <input type="file" id="fileInput" name="file" accept="image/*" />
         <button type="submit">Classify Uploaded Image</button>
       </form>
-    
-      <h2 style="margin-bottom : 10px; color : #333">Or use the Webcam:</h2>
-    
+
+      <h2 style="margin-bottom: 10px; color: #333">Or use the Webcam:</h2>
+
       <!-- Start Webcam Button -->
       <button id="startWebcamButton">Start Webcam</button>
-    
+
       <!-- Stop Webcam Button -->
       <button id="stopWebcamButton" style="display: none">Stop Webcam</button>
-    
+
       <!-- Webcam Display Area -->
-      <div id="webcamContainer" style="margin-top : 10px; display: none; align-items:center; flex-direction:column">
+      <div
+        id="webcamContainer"
+        style="
+          margin-top: 10px;
+          display: none;
+          align-items: center;
+          flex-direction: column;
+        "
+      >
         <video id="webcam" autoplay playsinline width="400"></video>
         <button id="captureButton">Capture and Classify</button>
       </div>
-    
+
       <!-- Results Section -->
       <div id="results">
         <h2>Results</h2>
         <p id="label"></p>
         <p id="confidence"></p>
-        <img id="previewImage" alt="Preview Image" style="max-width: 300px; display: none" />
-        <img id="binImage" alt="Bin Image" style="max-width: 300px; display: none" />
+        <img
+          id="previewImage"
+          alt="Preview Image"
+          style="max-width: 300px; display: none"
+        />
+        <img
+          id="binImage"
+          alt="Bin Image"
+          style="max-width: 300px; display: none"
+        />
       </div>
-    
+
       <!-- Waste Counters -->
       <div id="counters">
         <p>Organic Waste Count: <span id="organicCount">0</span></p>
         <p>Recyclable Waste Count: <span id="recyclableCount">0</span></p>
       </div>
-    
+
       <!-- Waste Count Graph -->
       <h3>Waste Classification Graph</h3>
       <div class="chart-container">
         <h2>Waste Classification Chart</h2>
         <canvas id="wasteChart" width="400" height="200"></canvas>
       </div>
-    
+
       <canvas id="canvas" style="display: none"></canvas>
     </div>
-    
+
     <script>
       const uploadForm = document.getElementById("uploadForm");
       const fileInput = document.getElementById("fileInput");
@@ -230,33 +250,30 @@
       });
 
       // Get references to elements
-// Get references to elements
-const hero = document.querySelector(".hero");
-const content = document.querySelector(".content");
-const video = document.querySelector("video");
+      // Get references to elements
+      const hero = document.querySelector(".hero");
+      const content = document.querySelector(".content");
+      const video = document.querySelector("video");
 
-// Scroll event listener
-window.addEventListener("scroll", () => {
-  const scrollPosition = window.scrollY;
+      // Scroll event listener
+      window.addEventListener("scroll", () => {
+        const scrollPosition = window.scrollY;
 
-  // Apply a blur effect on the video (based on scroll position)
-  const blurAmount = Math.min(scrollPosition / 20, 5); // Blur becomes stronger as you scroll
-  video.style.filter = `blur(${blurAmount}px)`;
+        // Apply a blur effect on the video (based on scroll position)
+        const blurAmount = Math.min(scrollPosition / 20, 5); // Blur becomes stronger as you scroll
+        video.style.filter = `blur(${blurAmount}px)`;
 
-  // Apply transform to content (making it appear as if it's scrolling slowly)
-  const translateAmount = Math.min(scrollPosition, 400); // Larger amount of scrolling effect
-  content.style.transform = `translateY(-${translateAmount}px)`; // Move content up more when scrolling
+        // Apply transform to content (making it appear as if it's scrolling slowly)
+        const translateAmount = Math.min(scrollPosition, 400); // Larger amount of scrolling effect
+        content.style.transform = `translateY(-${translateAmount}px)`; // Move content up more when scrolling
 
-  // Apply a class to the hero section for blur effect
-  if (scrollPosition > 50) {
-    hero.classList.add("blurred");
-  } else {
-    hero.classList.remove("blurred");
-  }
-});
-
-      
-      
+        // Apply a class to the hero section for blur effect
+        if (scrollPosition > 50) {
+          hero.classList.add("blurred");
+        } else {
+          hero.classList.remove("blurred");
+        }
+      });
     </script>
   </body>
 </html>

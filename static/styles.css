@@ -5,7 +5,7 @@
   box-sizing: border-box;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
-body{
+body {
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
@@ -46,14 +46,14 @@ body{
 
 /* Apply a transform to move content upwards as you scroll */
 .content.scrolled {
-  transform: translateY(-500px); 
+  transform: translateY(-500px);
 }
 
 /* Header Styling */
 h1 {
   font-size: 2.5rem;
   font-weight: bold;
-  color: #FFF;
+  color: #000000;
   margin-bottom: 30px;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -68,25 +68,14 @@ h1 {
   filter: blur(5px); /* Apply maximum blur */
 }
 
-
-
-
-.nav__bar {
-  height: 70px;
-  background-color: #333;
-  position: fixed; /* Keep the navbar at the top as you scroll */
-  top: 0px; /* Slightly offset from the top */
-  left: 0px; /* Offset from the left */
-  display: flex;
-  align-items: center;
-  justify-content: flex-start; /* Align items to the left */
-  color: white;
-  font-size: 24px;
-  z-index: 10; /* Ensure the navbar is above other content */
-  width: 100%;
-  display: flex;
-  align-items: center;
-  padding: 18px 0px 0px 15px;
+/* ---------------------------------------------------- */
+.waste-segregation-header p {
+  font-family: "Brush Script MT", cursive; /* Cursive italic font */
+  font-size: 5rem; /* Larger font size */
+  color: #000000; /* Teal text color */
+  text-shadow: 2px 2px 4px rgb(152, 152, 152); /* Subtle shadow for text */
+  text-align: left; /* Center-align text */
+  margin: 20px 0; /* Add vertical spacing */
 }
 /* Form Styling */
 form {
@@ -258,9 +247,9 @@ video {
 /* Chart Styling */
 .chart-container {
   width: 80%;
-  max-width: 600px;
+  max-width: 1000px;
   margin: 20px auto;
-  background: #fff;
+  background: #cbffc8;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 20px;
